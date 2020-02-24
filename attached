@@ -1,0 +1,43 @@
+digraph {
+	graph [size="12,12"]
+	node [align=left fontsize=12 height=0.2 ranksep=0.1 shape=box style=filled]
+	1366443758408 [label=MeanBackward0 fillcolor=darkolivegreen1]
+	1366488239368 -> 1366443758408
+	1366488239368 [label=SqueezeBackward0]
+	1366443758728 -> 1366488239368
+	1366443758728 [label=SigmoidBackward]
+	1366488214920 -> 1366443758728
+	1366488214920 [label=AddmmBackward]
+	1366544709704 -> 1366488214920
+	1366544709704 [label="linear3.bias
+ (1)" fillcolor=lightblue]
+	1366544711560 -> 1366488214920
+	1366544711560 [label=TanhBackward]
+	1366544711304 -> 1366544711560
+	1366544711304 [label=AddmmBackward]
+	1366533233864 -> 1366544711304
+	1366533233864 [label="linear2.bias
+ (32)" fillcolor=lightblue]
+	1366533233928 -> 1366544711304
+	1366533233928 [label=TanhBackward]
+	1366533234120 -> 1366533233928
+	1366533234120 [label=AddmmBackward]
+	1366533234248 -> 1366533234120
+	1366533234248 [label="linear1.bias
+ (64)" fillcolor=lightblue]
+	1366533234312 -> 1366533234120
+	1366533234312 [label=TBackward]
+	1366442731400 -> 1366533234312
+	1366442731400 [label="linear1.weight
+ (64, 20)" fillcolor=lightblue]
+	1366533233992 -> 1366544711304
+	1366533233992 [label=TBackward]
+	1366533230856 -> 1366533233992
+	1366533230856 [label="linear2.weight
+ (32, 64)" fillcolor=lightblue]
+	1366544710472 -> 1366488214920
+	1366544710472 [label=TBackward]
+	1366533230792 -> 1366544710472
+	1366533230792 [label="linear3.weight
+ (1, 32)" fillcolor=lightblue]
+}
