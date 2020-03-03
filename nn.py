@@ -15,8 +15,14 @@ class model(nn.Module):
 		self.inSize = size
 		super(model, self).__init__()
 		self.linear1 = nn.Linear(size, 64)
-		self.linear2 = nn.Linear(64, 32)
-		self.linear3 = nn.Linear(32, 1)
+		self.linear2 = nn.Linear(64, 128)
+
+		self.lineara = nn.Linear(128,256)
+		self.linearb = nn.Linear(256,512)
+		self.linearc = nn.Linear(512,256)
+		self.lineard = nn.Linear(256, 64)
+
+		self.linear3 = nn.Linear(64, 1)
 
 		self.dropout = nn.Dropout(0.3)
 	def forward(self, inp, doDropout = True):
@@ -29,6 +35,14 @@ class model(nn.Module):
 			z2 = self.dropout(z2)
 		a2 = F.tanh(z2)
 
+		a2 = self.lineara(a2)
+		a2 = F.tanh(a2)
+		a2 = self.linearb(a2)
+		a2 = F.tanh(a2)
+		a2 = self.linearc(a2)
+		a2 = F.tanh(a2)
+		a2 = self.lineard(a2)
+		a2 = F.tanh(a2)
 		z3 = self.linear3(a2)
 		a3 = F.sigmoid(z3)
 		return a3
@@ -116,14 +130,14 @@ data = 'heart'
 X, ys = loadFile(data+'-train.txt')
 
 # count of iterations
-ITER = 1000
+ITER = 500
 
 # initialize model with parameter of length of input
 dSize = X.shape[1]
 model = model(dSize)
 
 # initialize learning rate, loss fxn, optimizer
-learning_rate = 1e-4
+learning_rate = 1e-5
 loss = nn.BCELoss()
 optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
 
