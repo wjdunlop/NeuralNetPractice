@@ -34,7 +34,6 @@ class model(nn.Module):
 		if doDropout:
 			z2 = self.dropout(z2)
 		a2 = F.tanh(z2)
-
 		a2 = self.lineara(a2)
 		a2 = F.tanh(a2)
 		a2 = self.linearb(a2)
@@ -190,4 +189,4 @@ pyplot.plot(accuracies)
 pyplot.show()
 
 import torchviz
-torchviz. make_dot(y_hat.mean(), params = dict(model.named_parameters())).render('a', format = 'png')
+torchviz.make_dot(y_hat.mean(), params = dict(model.named_parameters())).render('a', format = 'png')
