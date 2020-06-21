@@ -1,4 +1,8 @@
-import numpy as np
-a = [[1,2,3]]
-k = np.array(a)
-print(k.shape)
+f = open('roswell.txt', encoding = 'utf-8')
+lens = []
+for l in f.readlines():
+    lens.append(len(l))
+
+from matplotlib import pyplot as ppl
+ppl.hist(lens)
+ppl.show()

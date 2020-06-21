@@ -16,12 +16,13 @@ print("GPU: ", tf.test.is_gpu_available(cuda_only=True) )
 def clean(file):
 	tokenized = []
 	for i in file.readlines():
+		i += '$'
 		lowered = i.lower()
 		stripped = ''
 		for char in lowered:
 			if char in 'qwertyuiopasdfghjklzxcvbnm':
 				stripped += char
-			elif char in '.,\n':
+			elif char in '.,$':
 				stripped += ' ' + char + ' '
 			# if char == '\n':
 			# 	stripped += '\n'
@@ -59,11 +60,14 @@ def makeTrainingSequences(toInt, length = 25):
 
 def makeModel(vocab_size, seq_length):
 	model = Sequential()
-	model.add(Embedding(vocab_size, 50, input_length=seq_length))
-	model.add(LSTM(128, return_sequences=True))
-	model.add(Dropout(0.5))
+	model.add(Embedding(vocab_size, 64, input_length=seq_length))
+	# model.add(LSTM(256, return_sequences=True))
+	# model.add(Dropout(0.5))
+	# model.add(LSTM(256, return_sequences=True))
+	# model.add(Dropout(0.5))
 	model.add(LSTM(256))
-	model.add(Dense(256, activation='relu'))
+	model.add(Dense(128, activation='relu'))
+	model.add(Dense(128, activation='relu'))
 	model.add(Dense(vocab_size, activation='softmax'))
 	print(model.summary())
 	print("MODEL INITIALIZED")
@@ -92,7 +96,7 @@ def generate_seq(model, seq_length, seed, n_words):
 		seed = np.array(newseed)
 	return result
 
-file = open('roswell.txt', encoding = 'utf-8')
+file = open('fdt.txt', encoding = 'utf-8')
 cleanedtxt = clean(file)
 print("total tokens, ", len(cleanedtxt))
 print("total unique tokens, ", len(list(set(cleanedtxt))))
@@ -110,13 +114,15 @@ for i in cleanedtxt:
 
 gpu = True
 train = True
+# train = False
 continueTrain = False
 seq_size = 10
-
+EPOC = 50
 
 sequences = makeTrainingSequences(toInt, length=seq_size)
 print(sequences.shape)
 X, y = sequences[:, :-1], sequences[:,-1]
+print("XXXXXX", X)
 print(X.shape)
 print(y.shape)
 print(y)
@@ -124,7 +130,7 @@ y = to_categorical(y, num_classes = vocab_size)
 seq_length = X.shape[1]
 
 model = makeModel(vocab_size, seq_length)
-model.compile(loss = 'categorical_crossentropy', optimizer = 'adam', metrics = ['accuracy'])
+model.compile(loss = 'binary_crossentropy', optimizer = 'adam', metrics = ['accuracy'])
 
 
 if continueTrain:
@@ -133,7 +139,7 @@ if train:
 	if gpu:
 		with tf.device('/gpu:0'):
 
-			history = model.fit(X, y, batch_size=128, epochs=125)
+			history = model.fit(X, y, batch_size=128, epochs=EPOC)
 	else:
 		with tf.device('/cpu:0'):
 			model = load_model('model.h5')
@@ -146,13 +152,15 @@ from matplotlib import pyplot as plt
 model = load_model('model.h5')
 import random
 random.seed(10)
-for _ in range(10):
+for _ in range(200,250):
 	seed = sequences[random.randint(0,len(sequences))][:-1]
 	# print(seed)
 	seedtext = ''
 	for i in seed:
-		if decoder[i] not in ',.\n':
+		if decoder[i] not in ',.':
 			seedtext += ' '+ decoder[i] 
+		elif decoder[i] == '$':
+			seedtext += '\n'
 		else:
 			seedtext += decoder[i]
 	# print(seed.shape)
@@ -163,9 +171,12 @@ for _ in range(10):
 	end = ''
 	for i in res:
 		# print(i)
-		if decoder[i[0]] not in ',.\n':
+		
+		if decoder[i[0]] is '$':
+			end += '\n'
 
-			end += ' ' + decoder[i[0]]
+		elif decoder[i[0]] not in ',.':
+			end += ' ' + decoder[i[0]]	
 
 		else:
 			end += decoder[i[0]]
@@ -176,22 +187,24 @@ for _ in range(10):
 	print(end)
 	print("==================")
 
-# summarize history for accuracy
-plt.plot(history.history['accuracy'])
-# plt.plot(history.history['val_accuracy'])
-plt.title('model accuracy')
-plt.ylabel('accuracy')
-plt.xlabel('epoch')
-plt.legend(['train', 'test'], loc='upper left')
-plt.show()
-# summarize history for loss
-plt.plot(history.history['loss'])
-# plt.plot(history.history['val_loss'])
-plt.title('model loss')
-plt.ylabel('loss')
-plt.xlabel('epoch')
-plt.legend(['train', 'test'], loc='upper left')
-plt.show()
+if train:
+
+	# summarize history for accuracy
+	plt.plot(history.history['accuracy'])
+	# plt.plot(history.history['val_accuracy'])
+	plt.title('model accuracy')
+	plt.ylabel('accuracy')
+	plt.xlabel('epoch')
+	plt.legend(['train', 'test'], loc='upper left')
+	plt.show()
+	# summarize history for loss
+	plt.plot(history.history['loss'])
+	# plt.plot(history.history['val_loss'])
+	plt.title('model loss')
+	plt.ylabel('loss')
+	plt.xlabel('epoch')
+	plt.legend(['train', 'test'], loc='upper left')
+	plt.show()
 
 
 
