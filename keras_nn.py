@@ -5,7 +5,7 @@ from keras.optimizers import Adam
 import tensorflow as tf
 from matplotlib import pyplot as pp
 
-mixed = True
+mixed = False
 
 if mixed:
     policy = tf.keras.mixed_precision.experimental.Policy('mixed_float16')
