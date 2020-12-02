@@ -96,7 +96,7 @@ def generate_seq(model, seq_length, seed, n_words):
 		seed = np.array(newseed)
 	return result
 
-file = open('fdt.txt', encoding = 'utf-8')
+file = open('names.txt', encoding = 'utf-8')
 cleanedtxt = clean(file)
 print("total tokens, ", len(cleanedtxt))
 print("total unique tokens, ", len(list(set(cleanedtxt))))

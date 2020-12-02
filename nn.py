@@ -132,8 +132,8 @@ def loadFile(filename, isCuda):
 		for i in range(len(thisFeatureVector)):
 			thisFeatureVector[i] = int(thisFeatureVector[i])
 
-		featureVectors.append(thisFeatureVector)
-		outputs.append(int(thisOutput))
+			featureVectors.append(thisFeatureVector)
+			outputs.append(int(thisOutput))
 
 
 	if isCuda:
